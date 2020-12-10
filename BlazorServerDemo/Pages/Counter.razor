@@ -1,0 +1,54 @@
+﻿@page "/counter/{StartCount:int?}"
+@page "/counter/test/{*CustomRoute}"
+
+<h3>Counter</h3>
+
+<input placeholder="Even Count" @ref="testInput" />
+
+<h2>Custom Route</h2>
+<p>
+    @CustomRoute
+</p>
+<p>
+    Current Count: @currentCount
+</p>
+<br />
+<input placeholder="Odd Count" @ref="testInput2" />
+<br />
+
+<button @onclick="IncrementCounter" class="btn btn-primary">Increment Counter</button>
+
+@code {
+    [Parameter]
+    public int? StartCount { get; set; }
+
+    [Parameter]
+    public string CustomRoute { get; set; }
+
+    int currentCount = 0;
+    private ElementReference testInput;
+    private ElementReference testInput2;
+
+    protected override void OnParametersSet()
+    {
+        if (StartCount is not null)
+        {
+            currentCount = (int)StartCount;
+        }
+    }
+
+    private async Task IncrementCounter()
+    {
+        currentCount++;
+
+        // Change focust if even number
+        @if (currentCount % 2 == 0)
+        {
+            await testInput.FocusAsync();
+        }
+        else // Change focus if odd number
+        {
+            await testInput2.FocusAsync();
+        }
+    }
+}

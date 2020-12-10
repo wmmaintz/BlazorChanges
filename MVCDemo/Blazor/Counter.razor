@@ -1,0 +1,31 @@
+﻿@page "/counter"
+
+    <input @ref="testInput"/>
+    <h3>Counter</h3>
+
+    <p>
+        Current Count: @i
+    </p>
+
+    <button @onclick="IncrementCounter" class="btn btn-primary">Increment Counter</button>
+
+    <input @ref="testInput2"/>
+
+    @code {
+        int i = 0;
+        private ElementReference testInput;
+        private ElementReference testInput2;
+
+        private async Task IncrementCounter()
+        {
+            i += 1;
+            @if (i % 2 == 0)
+            {
+                await testInput.FocusAsync();
+            } else
+            {
+                await testInput2.FocusAsync();
+            }
+
+        }
+    }

@@ -1,0 +1,58 @@
+﻿@page "/"
+
+@using System.IO
+
+<h1>Hello, YouTube!</h1>
+
+Welcome to your new app.
+<br />
+
+<p>
+    <InputFile OnChange="@OnInputFileChange" multiple />
+</p>
+
+@for (int i = 0; i < files.Count; i++)
+{
+    int fi = (i + 1);
+    <h2>File @fi: </h2>
+    <p>@files[i]</p>
+}
+<p>
+    <EditForm Model="demo">
+        <InputRadioGroup Name="CarType" @bind-Value="demo.TypeOfCar">
+            <h4>Car:</h4>
+            @foreach (var c in (CarType[])Enum.GetValues(typeof(CarType)))
+            {
+                <InputRadio Value="c" />
+                <span>&nbsp;</span> @c<br />
+            }
+        </InputRadioGroup>
+        <br />
+        <InputRadioGroup Name="age" @bind-Value="demo.Age">
+            <h4>User Age:</h4>
+            @for (int i = 21; i < 36; i++)
+            {
+                <InputRadio Value="i" />
+                <span>&nbsp;</span> @i<br />
+            }
+        </InputRadioGroup>
+    </EditForm>
+</p>
+
+@code{
+    private DemoModel demo = new();
+    private List<string> files = new();
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs args)
+    {
+        var maxFiles = 2;
+        var maxSize = 2 * 1024 * 1024; // 2MB
+        foreach (var file in args.GetMultipleFiles(maxFiles))
+        {
+            using var fileStream = file.OpenReadStream(maxAllowedSize: maxSize);
+            using var streamReader = new StreamReader(fileStream);
+            var fileContents = await streamReader.ReadToEndAsync();
+            files.Add(fileContents);
+        }
+    }
+}
